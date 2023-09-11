@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import './styles.css';
+import { useState, useEffect } from 'react';
+
+function getRandomQuote(quotes) {
+  return quotes[Math.floor(Math.random() * quotes.length)];
+}
 
 function App() {
+  const [quotes, setQuotes] = useState([]);
+  const [quote, setQuote] = useState(null);
+
+  useEffect(() => {
+    fetch("https://type.fit/api/quotes")
+    .then((res) => res.json())
+    .then((json) => {
+      setQuotes(json);
+      setQuote(json[0]);
+    });
+  }, []);
+
+  const text = quote?.text;
+  const author = (quote?.author) ? quote?.author : "";
+
+  function getNewQuote() {
+    setQuote(getRandomQuote(quotes));
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className='header'>
+        <h1>Namaste🙏</h1>
+        <h2>Welcome to Random Quotes Generator!</h2>
+      </div>
+      <section className='quote'>
+        <h3>
+          <span>"</span>
+          {text}
+          <span>"</span>
+        </h3>
+        <i>~{author.split(',')[0]}</i>
+      </section>
+      <button className='button-5' onClick={getNewQuote}>Refresh</button>
     </div>
   );
 }
